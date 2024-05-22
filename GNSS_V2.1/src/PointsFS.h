@@ -11,7 +11,7 @@
 int initPointsFS();
 int openPointsFile(uint8_t file_num, String *file_text);
 int openDebugFile(String *debug_file_text);
-int savePoint(uint8_t file_num, String *file_text, String point_name, double coord_x, double coord_y, double coord_z);
+int savePoint(uint8_t file_num, String *file_text, String point_name, double coord_x, double coord_y, double coord_z,uint8_t date_year, uint8_t date_mounth,uint8_t date_day,uint8_t date_hour,uint8_t date_minute,uint8_t date_second);
 int deletePrevPoint(uint8_t file_num, String *file_text);
 int saveDataStruct();
 void removeDebugFile();

@@ -34,5 +34,14 @@ double getNorthing();
 double getEasting();
 double getAltL();
 double getAltS();
+ uint16_t getyear();
+  uint8_t getmonth();
+  uint8_t getday();
+  uint8_t gethour();
+  uint8_t getminute();
+  uint8_t getsecond();
+
+
+
 
 #endif /* GPS_H */

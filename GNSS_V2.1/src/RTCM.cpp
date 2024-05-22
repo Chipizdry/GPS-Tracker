@@ -18,32 +18,24 @@ NTRIPClient ntrip_client;
 
 struct NTRIP_Settings
 {
-  /*
-    char* host     = "rtk2go.com";
-    int   httpPort = 2101;
-    char* mntpnt   = "geosense_f9p";
-    char* user     = "";
-    char* passwd   = "";
-*/
+  
 
-
-    String host     = "148.251.159.4";
-    int   httpPort = 2113;
-    //int   httpPort = 20032;
-    //char* mntpnt   = "auto_MSC-32";
+   /*
+    String host     = "195.16.76.194";
+    int   httpPort = 2999;
     String mntpnt   = "AUTOCS63-3H";
     String user     = "landcom2";
-    String passwd   = "lcrtk35par0l";
-
-
-/*
-    char* host     = "148.251.159.4";
-    int   httpPort = 20032;
-    char* mntpnt   = "auto_MSC-32";
-    //char* mntpnt   = "SK63_3";
-    char* user     = "landcom2";
-    char* passwd   = "lcrtk35par0l";
+    String passwd   = "landcomZP2";
 */
+
+    String host     = "gnss.org.ua";
+    int   httpPort = 2113;
+    String mntpnt   = "AUTOCS63-3H";
+    String user     = "2022landcom-2";
+    String passwd   = "476804";
+  
+               
+
 } ntripSettings;
 
 void ntripReader(void * parameter);
@@ -65,33 +57,56 @@ uint8_t getSourceTable(String* mount_points_table, void (*debug_func)(String))
   long times_1 = 0;
   uint8_t mntp_cnt = 0; 
   ntrip_client.reqSrcTbl(const_cast<char *>(ntripSettings.host.c_str()), ntripSettings.httpPort);
+  Serial.println("Ntrip_client_running...");
   times_1 = millis();
-  while(!source_table_received && ((millis() - times_1) < 1000))
+  while(!source_table_received && ((millis() - times_1) < 4000))
   {
     while(ntrip_client.available())
     {
       static String src_tbl_string;
       char c = ntrip_client.read();
+
+     
       src_tbl_string += c;
+     
       if(c == '\n' || sizeof(src_tbl_string) > 128) {
+         Serial.println("Ansver "+src_tbl_string);
           int str_pos_1 = src_tbl_string.indexOf("STR;");
           int str_pos_2 = src_tbl_string.indexOf(";", str_pos_1+4);
+
           if(str_pos_1 > -1 && str_pos_2 > -1) {
             String mount_point = src_tbl_string.substring(str_pos_1+4, str_pos_2 - str_pos_1);
             mount_points_table[mntp_cnt++] = mount_point;
+              
+                  /////////////////////////////
+            Serial.println("Found "+mount_point);
+            /////////////////////////////
           }
-          
+           
+
           //debug_func(src_tbl_string);
           src_tbl_string.clear();
+
+           
+
       }
+
+         Serial.println( mntp_cnt);
+
       if(src_tbl_string.indexOf("ENDSOURCETABLE") > - 1) {
         //debug_func(src_tbl_string);
         source_table_received = true;
+        Serial.println("ENDSOURCETABLE");
         src_tbl_string.clear();
         break;
       }
+
+       
     }
+     
   }
+
+   
   return mntp_cnt;
 }
 

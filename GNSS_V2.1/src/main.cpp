@@ -17,7 +17,7 @@ String debugData;
 String pointsAllocationListData;
 double currentAllocationCoordinates[3];
 
-
+String transponse (uint8_t times);
 
 void mqttCallback(String topic, String payload);
 void savePointBtnCallback();
@@ -31,8 +31,6 @@ void loadFileBtnCallback();
 void saveProjSettingsBtnCallback();
 void sendData();
 void uiTask(void * parameter);
-
-
 
 
 void setup()
@@ -128,8 +126,10 @@ void uiTask(void * parameter)
       if (jee.param("op_mode") == "source_pos")
       {
         jee.var("positionMonitor", main_collor + "<font size=5>LAT: " + String(getLat(), 8) + "<br>LON: " + String(getLon(), 8) +
-                "<br>ALT: " + String(getAltS(), 3) + status_string + "</span>");
+                "<br>ALT: " + String(getAltS(), 3)+"<br>Time:" + transponse(gethour())+":"+transponse(getminute())+":"+transponse(getsecond())+ status_string + "</span>");
+                 ///Serial.println(hours(gethour()));
       }
+     
       else if (jee.param("op_mode") == "target_pos")
       {
         jee.var("positionMonitor", main_collor + "<font size=5>N: " + String(getNorthing(), 3) + "<br>E: " + String(getEasting(), 3) +
@@ -210,7 +210,7 @@ void savePointBtnCallback()
   
   debugDataSave();
 
-  savePoint(jee.param("file_cn").toInt(), &pointsListData, pointName, getNorthing(), getEasting(), getAltL());
+  savePoint(jee.param("file_cn").toInt(), &pointsListData, pointName, getNorthing(), getEasting(), getAltL(), getyear(),getmonth(),getday(),gethour(),getminute(),getsecond());
   openPointsFile(jee.param("file_cn").toInt(), &pointsListData);
   jee.var("points_saved_list", POINTS_FILE_NAME + jee.param("file_cn") + ":\n" + pointsListData);
   buzzerWrite(SIGNAL_DONE);
@@ -236,11 +236,11 @@ void deletePrevPointCallback()
 void debugNTRIP(String dbg_msg)
 {
   static String ntrip_debug_str;
-  if(dbg_msg.length() >= 256) return;
+  if(dbg_msg.length() >= 512) return;//256
 
-  if(ntrip_debug_str.length() + dbg_msg.length() >= 1024)
+  if(ntrip_debug_str.length() + dbg_msg.length() >= 2048)  //1024
   {
-    ntrip_debug_str.remove(0, (ntrip_debug_str.length() + dbg_msg.length() - 1024));
+    ntrip_debug_str.remove(0, (ntrip_debug_str.length() + dbg_msg.length() - 2048));  //1024
   }
 
   ntrip_debug_str += dbg_msg;
@@ -249,10 +249,14 @@ void debugNTRIP(String dbg_msg)
 
 void requestMntpListCallback()
 {
+  Serial.println("Request_mount_points_list");
   onRequestNTRIP = true;
   debugNTRIP("Requesting mount points list ...\n");
-  String mntp_table[64];
+  String mntp_table[256];
   uint8_t mntp_num =  getSourceTable(mntp_table, debugNTRIP);
+
+  Serial.println("Mount_point_list_accepted");
+
   if(!mntp_num) {
     debugNTRIP("No mount points found\n");
   }
@@ -353,5 +357,21 @@ void savePointToListBtnCallback()
     Serial.println("INVALIDE!!!");
   }
   
+
+}
+
+
+
+
+String transponse (uint8_t times){
+ 
+ String res_time="00";
+ if(times<10){
+   res_time ="0"+String(times);
+ }
+ if(times>=10){
+   res_time = times;
+ }
+ return res_time;
 
 }

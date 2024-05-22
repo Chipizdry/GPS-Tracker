@@ -4,6 +4,7 @@
 #include <fstream>
 #include "GPS.h"
 
+extern String transponse (uint8_t times);
 
 extern type1021_data data1021;
 extern type1023_data data1023;
@@ -69,7 +70,7 @@ int openDebugFile(String *debug_file_text)
   return 1;
 }
 //===25/08===
-int savePoint(uint8_t file_num, String *file_text, String point_name, double coord_x, double coord_y, double coord_z)
+int savePoint(uint8_t file_num, String *file_text, String point_name, double coord_x, double coord_y, double coord_z,uint8_t date_year,uint8_t date_mounth,uint8_t date_day,uint8_t date_hour,uint8_t date_minute,uint8_t date_second)
 {
   if(file_num >= POINTS_FILES_NUM) return -1;
 
@@ -79,7 +80,7 @@ int savePoint(uint8_t file_num, String *file_text, String point_name, double coo
   pFile = SPIFFS.open(path_to_file[file_num], "a");
   Serial.println(pFile.size());
   p_line += String(point_name) += String(", ") += String(coord_x, 3) += String(", ") += String(coord_y, 3)\
-         += String(", ") += String(coord_z, 2)+= String("\n");
+         += String(", ") += String(coord_z, 2)+= String("- ")+= String(date_year)+= String("/")+= String(date_mounth)+= String("/")+= String(date_day)+= String("--")+= transponse(date_hour)+= String(":")+= transponse(date_minute)+= String(":")+= transponse(date_second) +=String("\n");
   
   if (pFile.print(p_line)) {
                //  "Сообщение-пример, сохраненное в режиме записи"

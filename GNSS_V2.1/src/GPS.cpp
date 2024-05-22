@@ -57,6 +57,38 @@ double getAltS()
   return gpsData.alt_s;
 }
 
+uint16_t getyear()
+{
+  return gpsData.year;
+}
+
+uint8_t getmonth(){
+
+return gpsData.month;
+}
+
+uint8_t getday(){
+
+return gpsData.day;
+}
+  
+uint8_t gethour(){
+
+return gpsData.hour;
+}  
+
+
+
+uint8_t getminute(){
+return gpsData.minute;
+}  
+
+
+uint8_t getsecond(){
+return gpsData.second;
+}  
+
+
 void GPS_Reader(void * parameter)
 {
   for(;;)
