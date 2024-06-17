@@ -133,7 +133,7 @@ void uiTask(void * parameter)
       else if (jee.param("op_mode") == "target_pos")
       {
         jee.var("positionMonitor", main_collor + "<font size=5>N: " + String(getNorthing(), 3) + "<br>E: " + String(getEasting(), 3) +
-                "<br>ALT: " + String(getAltL(), 3) + status_string + "</span>");
+                "<br>ALT: " + String(getAltL(), 3) +"<br>Time:" + transponse(gethour())+":"+transponse(getminute())+":"+transponse(getsecond()) + status_string + "</span>");
       }
       openPointsFile(jee.param("file_cn").toInt(), &pointsListData);
       jee.var("points_saved_list", POINTS_FILE_NAME + jee.param("file_cn") + ":\n" + pointsListData);
